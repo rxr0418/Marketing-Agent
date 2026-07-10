@@ -11,11 +11,18 @@ export type TraceStep =
       supporting_items: string[];
       considered_but_avoided_labels?: string[];
     }
+  | {
+      kind: "web_search";
+      query: string;
+      results: { title: string; url: string }[];
+      error?: string;
+    }
   | { kind: "capstone"; text: string };
 
 export interface Product {
   name: string;
   reason: string;
+  sourceUrl?: string; // set when the live agent verified this is a real product via web_search
 }
 
 export interface Campaign {

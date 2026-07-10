@@ -67,6 +67,33 @@ function TraceStepView({ step }: { step: TraceStep }) {
       </div>
     );
   }
+  if (step.kind === "web_search") {
+    return (
+      <div className="rounded-lg border border-violet-200 bg-violet-50 p-4 text-sm">
+        <div className="font-medium text-violet-900 mb-2">🔎 Searched: &quot;{step.query}&quot;</div>
+        {step.error ? (
+          <p className="text-violet-500">Search error: {step.error}</p>
+        ) : step.results.length === 0 ? (
+          <p className="text-violet-500">No results.</p>
+        ) : (
+          <ul className="space-y-1">
+            {step.results.slice(0, 4).map((r, i) => (
+              <li key={i} className="truncate">
+                <a
+                  href={r.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-violet-700 underline decoration-dotted hover:text-violet-900"
+                >
+                  {r.title}
+                </a>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    );
+  }
   return (
     <div className="text-sm text-emerald-700 pl-4 border-l-2 border-emerald-300">✓ {step.text}</div>
   );
@@ -183,7 +210,17 @@ export default function Home() {
                 </div>
                 <div>
                   <div className="font-medium text-slate-900 mb-1">{p.name}</div>
-                  <div className="text-sm text-slate-500">{p.reason}</div>
+                  <div className="text-sm text-slate-500 mb-1">{p.reason}</div>
+                  {p.sourceUrl && (
+                    <a
+                      href={p.sourceUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-xs text-emerald-600 hover:text-emerald-800"
+                    >
+                      ✓ Verified real product — {new URL(p.sourceUrl).hostname.replace("www.", "")}
+                    </a>
+                  )}
                 </div>
               </div>
             );
@@ -287,8 +324,11 @@ export default function Home() {
           multiple reliable needs, it proposes one focused campaign per need instead of blending them
           into one disjointed headline. The highest-confidence campaign shows by default; &quot;Try
           another reliable angle&quot; cycles only through the needs the agent already confirmed, never
-          a freshly invented or merged topic. &quot;Live&quot; mode runs this as a real multi-step Claude
-          tool-use loop and requires <code className="bg-slate-100 rounded px-1">ANTHROPIC_API_KEY</code> in{" "}
+          a freshly invented or merged topic. In live mode, the agent must use Anthropic&apos;s
+          web_search tool to find a real, currently-sold product before it&apos;s allowed to recommend
+          it — every live-mode product links to the actual listing it found as proof, rather than a
+          name Claude made up. &quot;Live&quot; mode runs this as a real multi-step Claude tool-use loop
+          and requires <code className="bg-slate-100 rounded px-1">ANTHROPIC_API_KEY</code> in{" "}
           <code className="bg-slate-100 rounded px-1">.env.local</code>.
         </p>
       </section>
