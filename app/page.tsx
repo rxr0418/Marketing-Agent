@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { PURCHASE_HISTORIES, getHistory, TraceStep, Campaign } from "@/lib/purchaseHistories";
+import { productIcon } from "@/lib/productIcon";
 
 type Mode = "cached" | "live";
 type HistoryId = "A" | "B";
@@ -170,12 +171,23 @@ export default function Home() {
           </span>
         </div>
         <div className="grid sm:grid-cols-2 gap-4">
-          {campaign.products.map((p, i) => (
-            <div key={i} className="rounded-xl border border-slate-200 bg-white shadow-sm p-4">
-              <div className="font-medium text-slate-900 mb-1">{p.name}</div>
-              <div className="text-sm text-slate-500">{p.reason}</div>
-            </div>
-          ))}
+          {campaign.products.map((p, i) => {
+            const icon = productIcon(p.name);
+            return (
+              <div key={i} className="rounded-xl border border-slate-200 bg-white shadow-sm p-4 flex gap-4">
+                <div
+                  className={`shrink-0 w-12 h-12 rounded-lg ${icon.bg} flex items-center justify-center text-2xl`}
+                  aria-hidden
+                >
+                  {icon.emoji}
+                </div>
+                <div>
+                  <div className="font-medium text-slate-900 mb-1">{p.name}</div>
+                  <div className="text-sm text-slate-500">{p.reason}</div>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </section>
 
