@@ -1,11 +1,74 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { PURCHASE_HISTORIES, getHistory, TraceStep, Campaign } from "@/lib/purchaseHistories";
 import { productIcon } from "@/lib/productIcon";
 
 type Mode = "cached" | "live";
 type HistoryId = "A" | "B";
+
+type VisualStage = "loading" | "image" | "favicon" | "emoji";
+
+function ProductVisual({ name, sourceUrl }: { name: string; sourceUrl?: string }) {
+  const icon = productIcon(name);
+  const [stage, setStage] = useState<VisualStage>(sourceUrl ? "loading" : "emoji");
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    setImageUrl(null);
+    if (!sourceUrl) {
+      setStage("emoji");
+      return;
+    }
+    setStage("loading");
+    let cancelled = false;
+    fetch(`/api/product-image?url=${encodeURIComponent(sourceUrl)}`)
+      .then((r) => r.json())
+      .then((data) => {
+        if (cancelled) return;
+        if (data.ok && data.imageUrl) {
+          setImageUrl(data.imageUrl);
+          setStage("image");
+        } else {
+          setStage("favicon");
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setStage("favicon");
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [sourceUrl]);
+
+  if (stage === "image" && imageUrl) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={imageUrl}
+        alt={name}
+        className="shrink-0 w-12 h-12 rounded-lg object-cover border border-slate-100"
+        onError={() => setStage("favicon")}
+      />
+    );
+  }
+
+  if ((stage === "favicon" || stage === "loading") && sourceUrl) {
+    const faviconUrl = `https://www.google.com/s2/favicons?domain=${new URL(sourceUrl).hostname}&sz=128`;
+    return (
+      <div className={`shrink-0 w-12 h-12 rounded-lg ${icon.bg} flex items-center justify-center p-2.5`}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={faviconUrl} alt={name} className="w-full h-full object-contain" onError={() => setStage("emoji")} />
+      </div>
+    );
+  }
+
+  return (
+    <div className={`shrink-0 w-12 h-12 rounded-lg ${icon.bg} flex items-center justify-center text-2xl`} aria-hidden>
+      {icon.emoji}
+    </div>
+  );
+}
 
 const VERDICT_STYLE: Record<string, string> = {
   ambiguous_discard: "border-slate-300 text-slate-500 bg-slate-50",
@@ -198,33 +261,25 @@ export default function Home() {
           </span>
         </div>
         <div className="grid sm:grid-cols-2 gap-4">
-          {campaign.products.map((p, i) => {
-            const icon = productIcon(p.name);
-            return (
-              <div key={i} className="rounded-xl border border-slate-200 bg-white shadow-sm p-4 flex gap-4">
-                <div
-                  className={`shrink-0 w-12 h-12 rounded-lg ${icon.bg} flex items-center justify-center text-2xl`}
-                  aria-hidden
-                >
-                  {icon.emoji}
-                </div>
-                <div>
-                  <div className="font-medium text-slate-900 mb-1">{p.name}</div>
-                  <div className="text-sm text-slate-500 mb-1">{p.reason}</div>
-                  {p.sourceUrl && (
-                    <a
-                      href={p.sourceUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-xs text-emerald-600 hover:text-emerald-800"
-                    >
-                      ✓ Verified real product — {new URL(p.sourceUrl).hostname.replace("www.", "")}
-                    </a>
-                  )}
-                </div>
+          {campaign.products.map((p, i) => (
+            <div key={i} className="rounded-xl border border-slate-200 bg-white shadow-sm p-4 flex gap-4">
+              <ProductVisual name={p.name} sourceUrl={p.sourceUrl} />
+              <div>
+                <div className="font-medium text-slate-900 mb-1">{p.name}</div>
+                <div className="text-sm text-slate-500 mb-1">{p.reason}</div>
+                {p.sourceUrl && (
+                  <a
+                    href={p.sourceUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-xs text-emerald-600 hover:text-emerald-800"
+                  >
+                    ✓ Verified real product — {new URL(p.sourceUrl).hostname.replace("www.", "")}
+                  </a>
+                )}
               </div>
-            );
-          })}
+            </div>
+          ))}
         </div>
       </section>
 

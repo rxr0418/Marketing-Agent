@@ -109,21 +109,25 @@ export const PURCHASE_HISTORIES: PurchaseHistory[] = [
             "Restock the sleep stack you already trust — plus a few upgrades that might help more than another supplement.",
           products: [
             {
-              name: "Magnesium L-Threonate + Glycine, Subscribe & Save 2-pack",
+              name: "NOW Foods Glycine 1000mg, 100 Veg Capsules",
               reason: "Your usual sleep stack, restocked automatically so one bad night never turns into a bad week.",
+              sourceUrl: "https://www.nowfoods.com/products/supplements/glycine-1000-mg-veg-capsules",
             },
             {
-              name: "Blackout Curtains — Prime Day deal",
+              name: "Life Extension Neuro-Mag Magnesium L-Threonate, 90 Capsules",
+              reason: "The other half of the stack you already buy — restocked at the same time so you're never missing one half of the combo.",
+              sourceUrl: "https://www.lifeextension.com/vitamins-supplements/item01603/neuro-mag-magnesium-l-threonate",
+            },
+            {
+              name: "NICETOWN Blackout Thermal Insulated Grommet Curtains",
               reason:
                 "Light exposure is one of the most common reasons a sleep stack alone doesn't fully fix 3am wake-ups.",
+              sourceUrl: "https://nicetown.com/products/blackout-thermal-insulated-grommet-drapes",
             },
             {
-              name: "White Noise Machine",
+              name: "LectroFan EVO White Noise Machine",
               reason: "Built for exactly the symptom you're dealing with — staying asleep, not just falling asleep.",
-            },
-            {
-              name: "Weighted Blanket, up to 40% off",
-              reason: "A non-supplement option worth trying, given how much you've already invested in fixing this.",
+              sourceUrl: "https://www.lectrofan.com/products/lectrofan-evo",
             },
           ],
         },
@@ -236,13 +240,15 @@ export const PURCHASE_HISTORIES: PurchaseHistory[] = [
           subheadline: "Prime Day deals to complement your desk chair setup.",
           products: [
             {
-              name: "Lumbar Support Cushion",
+              name: "Everlasting Comfort Lumbar Support Pillow for Office Chair",
               reason: "Adds lower-back-specific support your kneeling chair alone may not fully provide.",
+              sourceUrl: "https://everlastingcomfort.com/products/back-cushion-lumbar-support-pillow",
             },
             {
-              name: "Standing Desk Converter",
+              name: "FEZIBO Height Adjustable Standing Desk Converter (Series DC)",
               reason:
                 "If the chair swap hasn't fully fixed it, alternating sit/stand often helps more than any single chair.",
+              sourceUrl: "https://www.fezibo.com/products/fezibo-standing-desk-converter-series-dc",
             },
           ],
         },
@@ -253,12 +259,15 @@ export const PURCHASE_HISTORIES: PurchaseHistory[] = [
           subheadline: "A different approach to multi-cat hair control this Prime Day.",
           products: [
             {
-              name: "Silicone Pet Hair Remover (non-motorized)",
+              name: "ChomChom Roller Reusable Pet Hair Remover",
               reason: "Since the motorized brush attachment got returned, here's a different approach to the same shedding problem.",
+              sourceUrl: "https://www.amazon.com/Pet-Dog-Cat-Hair-Remover-Couch/dp/B00BAGTNAQ",
             },
             {
-              name: "Multi-Cat Clumping Litter, Subscribe & Save",
+              name: "ARM & HAMMER Slide Easy Clean-Up Clumping Litter, Multi-Cat",
               reason: "Your usual multi-cat formula, restocked automatically.",
+              sourceUrl:
+                "https://www.armandhammer.com/en/cat-litter/premium-cat-litter/slide-cat-litter/slide-easy-clean-up-clumping-litter-multi-cat-40-lb",
             },
           ],
         },
