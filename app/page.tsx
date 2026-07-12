@@ -15,12 +15,7 @@ function ProductVisual({ name, sourceUrl }: { name: string; sourceUrl?: string }
   const [imageUrl, setImageUrl] = useState<string | null>(null);
 
   useEffect(() => {
-    setImageUrl(null);
-    if (!sourceUrl) {
-      setStage("emoji");
-      return;
-    }
-    setStage("loading");
+    if (!sourceUrl) return;
     let cancelled = false;
     fetch(`/api/product-image?url=${encodeURIComponent(sourceUrl)}`)
       .then((r) => r.json())
@@ -168,7 +163,6 @@ export default function Home() {
   const [liveResult, setLiveResult] = useState<{ trace: TraceStep[]; campaigns: Campaign[] } | null>(null);
   const [loading, setLoading] = useState(false);
   const [liveError, setLiveError] = useState<string | null>(null);
-  const [showRaw, setShowRaw] = useState(false);
   const [campaignIndex, setCampaignIndex] = useState(0);
 
   const history = getHistory(historyId);
@@ -252,17 +246,10 @@ export default function Home() {
 
       {/* Recommended products */}
       <section className="max-w-4xl mx-auto px-6 pt-10">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-sm uppercase tracking-widest text-slate-400">Recommended for you</h2>
-          <span
-            className={`text-xs uppercase tracking-wide border rounded-full px-2 py-0.5 ${CONFIDENCE_STYLE[campaign.confidence]}`}
-          >
-            {campaign.confidence} confidence · {campaign.need}
-          </span>
-        </div>
+        <h2 className="text-sm uppercase tracking-widest text-slate-400 mb-4">Recommended for you</h2>
         <div className="grid sm:grid-cols-2 gap-4">
-          {campaign.products.map((p, i) => (
-            <div key={i} className="rounded-xl border border-slate-200 bg-white shadow-sm p-4 flex gap-4">
+          {campaign.products.map((p) => (
+            <div key={p.sourceUrl ?? p.name} className="rounded-xl border border-slate-200 bg-white shadow-sm p-4 flex gap-4">
               <ProductVisual name={p.name} sourceUrl={p.sourceUrl} />
               <div>
                 <div className="font-medium text-slate-900 mb-1">{p.name}</div>
@@ -303,21 +290,8 @@ export default function Home() {
             </button>
           ))}
         </div>
-        <button
-          onClick={() => setShowRaw((s) => !s)}
-          className="text-xs text-slate-500 underline decoration-dotted mb-8"
-        >
-          {showRaw ? "Hide" : "Show"} raw order history fed to the agent
-        </button>
-        {showRaw && (
-          <ul className="mb-8 -mt-4 rounded-lg border border-slate-200 bg-white p-4 text-xs text-slate-500 space-y-1 list-disc list-inside">
-            {history.items.map((item, i) => (
-              <li key={i}>{item}</li>
-            ))}
-          </ul>
-        )}
 
-        <h2 className="text-sm uppercase tracking-widest text-slate-400 mb-3">2 · Content source</h2>
+        <h2 className="text-sm uppercase tracking-widest text-slate-400 mb-3 mt-8">2 · Content source</h2>
         <div className="flex flex-wrap gap-3 mb-10">
           <button
             onClick={() => switchMode("cached")}
